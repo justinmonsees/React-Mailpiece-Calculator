@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
+import { Context } from '../components/context/GlobalContext';
 
 const AddPaperModal = props => {
+  //get global state from the globalContext
+  const [globalState, updateGlobalState] = useContext(Context);
+
   //if the paper types props have not been loaded, don't render the component
-  if (typeof props.paperTypes[0] === 'undefined') {
+  if (typeof globalState.paperTypes[0] === 'undefined') {
     return <></>;
   }
 
@@ -14,7 +18,7 @@ const AddPaperModal = props => {
   //use state for controlled form items
   const [paperName, setPaperName] = useState('');
   const [paperType, setPaperType] = useState(
-    props.paperTypes[0].name.toLowerCase()
+    globalState.paperTypes[0].name.toLowerCase()
   );
   const [paperWeight, setPaperWeight] = useState('');
   const [paperWeightUnit, setPaperWeightUnit] = useState('lb');
@@ -33,7 +37,8 @@ const AddPaperModal = props => {
         body: JSON.stringify(paper)
       });
 
-      props.onPaperAdd(true);
+      updateGlobalState();
+
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -43,7 +48,7 @@ const AddPaperModal = props => {
   const handleSubmitNewPaper = e => {
     //get the paperType id based on paper selected
 
-    const paperTypeID = props.paperTypes.find(
+    const paperTypeID = globalState.paperTypes.find(
       proppaperType => proppaperType.name.toLowerCase() === paperType
     )._id;
 
@@ -59,7 +64,7 @@ const AddPaperModal = props => {
     saveNewPaper(paper);
 
     //reset state values for default paper type and weight unit
-    setPaperType(props.paperTypes[0].name.toLowerCase());
+    setPaperType(globalState.paperTypes[0].name.toLowerCase());
     setPaperWeightUnit('lb');
 
     handleClose();
@@ -94,7 +99,7 @@ const AddPaperModal = props => {
                   setPaperType(e.target.value);
                 }}
               >
-                {props.paperTypes.map((paperType, i) => {
+                {globalState.paperTypes.map((paperType, i) => {
                   return (
                     <option key={i} value={paperType.id}>
                       {paperType.name.toLowerCase()}

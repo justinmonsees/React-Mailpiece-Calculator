@@ -4,6 +4,7 @@ require("./db/mongoose");
 
 const paperRouter = require("./routers/paperRouter");
 const paperTypeRouter = require("./routers/paperTypeRouter");
+const envelopeRouter = require("./routers/envelopeRouter");
 
 const errLog = require("./logger/logger");
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use(paperRouter);
 app.use(paperTypeRouter);
+app.use(envelopeRouter);
 
 app.listen(port, () => {
   console.log("Server is up on port " + port);

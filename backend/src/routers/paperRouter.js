@@ -77,4 +77,3 @@ router.delete("/papers/:id", async (req, res) => {
 });
 
 module.exports = router;
-``;
