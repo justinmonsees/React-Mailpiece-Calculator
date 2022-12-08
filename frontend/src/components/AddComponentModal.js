@@ -8,32 +8,108 @@ import {
 } from '../helpers/calcFunctions';
 import uuid from 'react-uuid';
 
+const DEC_REGEX = '^[1-9]\\d*(.\\d+)?$';
+const INT_REGEX = '\\d*';
+
 const AddComponentModal = props => {
+  console.log('re-rendered');
+
   //get global state from the globalContext
   const [globalState] = useContext(Context);
 
-  //self mailer state input variables
-  const [smPaperName, setSmPaperName] = useState('');
-  const [smHeight, setSmHeight] = useState('');
-  const [smWidth, setSmWidth] = useState('');
-  const [smNumPanels, setSmNumPanels] = useState('');
-
-  //insert state input variables
-  const [insPaperName, setInsPaperName] = useState('');
-  const [insHeight, setInsHeight] = useState('');
-  const [insWidth, setInsWidth] = useState('');
-  const [insNumPanels, setInsNumPanels] = useState('');
-  const [insNumPages, setInsNumPages] = useState('');
-
-  //booklet state input variables
-  const [bkCvrPaperName, setBkCvrPaperName] = useState('');
-  const [bkTxtPaperName, setBkTxtPaperName] = useState('');
-  const [bkHeight, setBkHeight] = useState('');
-  const [bkWidth, setBkWidth] = useState('');
-  const [bkNumPages, setBkNumPages] = useState('');
-
-  //envelope state input variable
-  const [envName, setEnvName] = useState('');
+  //refactored input variables into 1 state object
+  const [formValues, setFormValues] = useState({
+    smPaperName: {
+      value: '',
+      pattern: '',
+      isInvalid: false,
+      touched: false
+    },
+    smHeight: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    smWidth: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    smNumPanels: {
+      value: '',
+      pattern: INT_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    insPaperName: {
+      value: '',
+      pattern: '',
+      isInvalid: false,
+      touched: false
+    },
+    insHeight: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    insWidth: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    insNumPanels: {
+      value: '',
+      pattern: INT_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    insNumPages: {
+      value: '',
+      pattern: INT_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    bkCvrPaperName: {
+      value: '',
+      pattern: '',
+      isInvalid: false,
+      touched: false
+    },
+    bkTxtPaperName: {
+      value: '',
+      pattern: '',
+      isInvalid: false,
+      touched: false
+    },
+    bkHeight: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    bkWidth: {
+      value: '',
+      pattern: DEC_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    bkNumPages: {
+      value: '',
+      pattern: INT_REGEX,
+      isInvalid: true,
+      touched: false
+    },
+    envName: {
+      value: '',
+      pattern: '',
+      isInvalid: false,
+      touched: false
+    }
+  });
 
   //component state variable
   const [displaySelfMailer, setDisplaySelfMailer] = useState('');
@@ -45,6 +121,55 @@ const AddComponentModal = props => {
 
   const [compType, setCompType] = useState('Self Mailer');
 
+  const updateValues = e => {
+    const input = e.target.name;
+
+    setFormValues({
+      ...formValues,
+      [input]: { ...formValues[input], value: e.target.value, touched: true }
+    });
+  };
+
+  const updateMultipleValues = (inputs, values) => {
+    let newFormValues = { ...formValues };
+
+    inputs.forEach(
+      input =>
+        (newFormValues = {
+          ...newFormValues,
+          [input]: { ...newFormValues[input], ...values }
+        })
+    );
+
+    setFormValues(newFormValues);
+  };
+
+  const validateInput = e => {
+    const input = e.target.name;
+
+    const inputPattern = formValues[input].pattern;
+    const regex = new RegExp(inputPattern);
+    //console.log(`REGEX RESULT: ${regex.test(e.target.value)}`);
+
+    if (!regex.test(e.target.value)) {
+      setFormValues({
+        ...formValues,
+        [input]: {
+          ...formValues[input],
+          isInValid: true
+        }
+      });
+    } else {
+      setFormValues({
+        ...formValues,
+        [input]: {
+          ...formValues[input],
+          isInValid: false
+        }
+      });
+    }
+  };
+
   const resetDefaults = () => {
     //default display
     setDisplaySelfMailer('d-none');
@@ -52,27 +177,36 @@ const AddComponentModal = props => {
     setDisplayBooklet('d-none');
     setDisplayEnvelope('d-none');
 
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!REVISIT THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //you can only call the update multiple values function once within a function
+    // const papersToReset = ['smPaperName', 'insPaperName', 'bkCvrPaperName','bkTxtPaperName', 'envName'];
+
     if (globalState.papers.length > 0) {
-      setSmPaperName(globalState.papers[0]._id);
-      setInsPaperName(globalState.papers[0]._id);
-      setBkCvrPaperName(globalState.papers[0]._id);
-      setBkTxtPaperName(globalState.papers[0]._id);
-      setEnvName(globalState.envelopes[0]._id);
+      //updateMultipleValues(papersToReset,{value:globalState.papers[0]._id})
+      // setSmPaperName(globalState.papers[0]._id);
+      // setInsPaperName(globalState.papers[0]._id);
+      // setBkCvrPaperName(globalState.papers[0]._id);
+      // setBkTxtPaperName(globalState.papers[0]._id);
+      // setEnvName(globalState.envelopes[0]._id);
     }
 
     //default self mailer input values
-    setSmWidth('');
-    setSmHeight('');
-    setSmNumPanels('');
-    //default insert input values
-    setInsWidth('');
-    setInsHeight('');
-    setInsNumPanels('');
-    setInsNumPages('');
-    //default booklet input values
-    setBkWidth('');
-    setBkHeight('');
-    setBkNumPages('');
+    // const inputValuesToReset = [
+    //   'smWidth',
+    //   'smHeight',
+    //   'smNumPanels',
+    //   'insWidth',
+    //   'insHeight',
+    //   'insNumPanels',
+    //   'insNumPages',
+    //   'bkWidth',
+    //   'bkHeight',
+    //   'bkNumPags'
+    // ];
+
+    // const valuesObj = { value: '', touched: false };
+
+    // updateMultipleValues(inputValuesToReset, valuesObj);
   };
 
   useEffect(() => {
@@ -90,16 +224,24 @@ const AddComponentModal = props => {
   }, [compType]);
 
   const [show, setShow] = useState(false);
+
   const handleShow = () => {
     resetDefaults();
     setDisplaySelfMailer('');
     setCompType('Self Mailer');
 
-    setSmPaperName(globalState.papers[0]._id);
-    setInsPaperName(globalState.papers[0]._id);
-    setBkCvrPaperName(globalState.papers[0]._id);
-    setBkTxtPaperName(globalState.papers[0]._id);
-    setEnvName(globalState.envelopes[0]._id);
+    //exp
+    // const input = 'smHeight';
+    // setFormValues({
+    //   ...formValues,
+    //   [input]: { ...formValues[input], value: '', touched: false }
+    // });
+
+    // setSmPaperName(globalState.papers[0]._id);
+    // setInsPaperName(globalState.papers[0]._id);
+    // setBkCvrPaperName(globalState.papers[0]._id);
+    // setBkTxtPaperName(globalState.papers[0]._id);
+    // setEnvName(globalState.envelopes[0]._id);
 
     setShow(true);
   };
@@ -115,8 +257,12 @@ const AddComponentModal = props => {
 
     switch (compType) {
       case 'Self Mailer':
+        const smHeight = formValues.smHeight.value;
+        const smWidth = formValues.smWidth.value;
+        const smNumPanels = formValues.smNumPanels.value;
+
         selectedPaper = globalState.papers.find(
-          paper => paper._id === smPaperName
+          paper => paper._id === formValues.smPaperName.value
         );
 
         ({ totalWeight, totalThickness } = calcSelfMailer(
@@ -130,8 +276,13 @@ const AddComponentModal = props => {
         compName = `${smWidth}x${smHeight} Self Mailer: ${selectedPaper.name}`;
         break;
       case 'Insert':
+        const insHeight = formValues.insHeight.value;
+        const insWidth = formValues.insWidth.value;
+        const insNumPanels = formValues.insNumPanels.value;
+        const insNumPages = formValues.insNumPages.value;
+
         selectedPaper = globalState.papers.find(
-          paper => paper._id === insPaperName
+          paper => paper._id === formValues.insPaperName.value
         );
 
         ({ totalWeight, totalThickness } = calcInsert(
@@ -146,12 +297,16 @@ const AddComponentModal = props => {
         compName = `${insWidth}x${insHeight} ${insNumPages} Insert: ${selectedPaper.name}`;
         break;
       case 'Booklet':
+        const bkHeight = formValues.bkHeight.value;
+        const bkWidth = formValues.bkWidth.value;
+        const bkNumPages = formValues.bkNumPages.value;
+
         selectedCvrPaper = globalState.papers.find(
-          paper => paper._id === bkCvrPaperName
+          paper => paper._id === formValues.bkCvrPaperName.value
         );
 
         selectedTxtPaper = globalState.papers.find(
-          paper => paper._id === bkTxtPaperName
+          paper => paper._id === formValues.bkTxtPaperName.value
         );
 
         ({ totalWeight, totalThickness } = calcBooklet(
@@ -167,7 +322,9 @@ const AddComponentModal = props => {
         compName = `${bkWidth}x${bkHeight} ${bkNumPages} Booklet`;
         break;
       case 'Envelope':
-        selectedEnv = globalState.envelopes.find(env => env._id === envName);
+        selectedEnv = globalState.envelopes.find(
+          env => env._id === formValues.envName.value
+        );
         totalWeight = selectedEnv.weight;
         totalThickness = selectedEnv.caliper;
 
@@ -217,10 +374,10 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Name:</Form.Label>
                 <Form.Select
+                  name="smPaperName"
                   placeholder="Paper Name"
-                  value={smPaperName}
-                  onChange={e => setSmPaperName(e.target.value)}
-                  className="is-valid"
+                  value={formValues.smPaperName.value}
+                  onChange={e => updateValues(e)}
                 >
                   {globalState.papers.map((paper, i) => {
                     return (
@@ -236,19 +393,28 @@ const AddComponentModal = props => {
                 <Form.Label>Flat Size:</Form.Label>
                 <InputGroup className="mb-3">
                   <Form.Control
-                    required
-                    type="text"
+                    name="smHeight"
                     aria-label="Height"
                     placeholder="Height"
-                    value={smHeight}
-                    onChange={event => setSmHeight(event.target.value)}
+                    value={formValues.smHeight.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.smHeight.isInValid &&
+                      formValues.smHeight.touched
+                    }
                   />
                   <InputGroup.Text>X</InputGroup.Text>
                   <Form.Control
+                    name="smWidth"
                     aria-label="Width"
                     placeholder="Width"
-                    value={smWidth}
-                    onChange={e => setSmWidth(e.target.value)}
+                    value={formValues.smWidth.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.smWidth.isInValid && formValues.smWidth.touched
+                    }
                   />
                 </InputGroup>
               </Form.Group>
@@ -256,11 +422,15 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Number of Panels:</Form.Label>
                 <Form.Control
+                  name="smNumPanels"
                   placeholder="# of Panels"
-                  value={smNumPanels}
-                  onChange={e => {
-                    setSmNumPanels(e.target.value);
-                  }}
+                  value={formValues.smNumPanels.value}
+                  onChange={e => updateValues(e)}
+                  onBlur={e => validateInput(e)}
+                  isInvalid={
+                    formValues.smNumPanels.isInValid &&
+                    formValues.smNumPanels.touched
+                  }
                 />
               </Form.Group>
             </div>
@@ -269,9 +439,10 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Name:</Form.Label>
                 <Form.Select
+                  name="insPaperName"
                   placeholder="Paper Name"
-                  value={insPaperName}
-                  onChange={e => setInsPaperName(e.target.value)}
+                  value={formValues.insPaperName.values}
+                  onChange={e => updateValues(e)}
                 >
                   {globalState.papers.map((paper, i) => {
                     return (
@@ -287,17 +458,29 @@ const AddComponentModal = props => {
                 <Form.Label>Flat Size:</Form.Label>
                 <InputGroup className="mb-3">
                   <Form.Control
+                    name="insHeight"
                     aria-label="Height"
                     placeholder="Height"
-                    value={insHeight}
-                    onChange={event => setInsHeight(event.target.value)}
+                    value={formValues.insHeight.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.insHeight.isInValid &&
+                      formValues.insHeight.touched
+                    }
                   />
                   <InputGroup.Text>X</InputGroup.Text>
                   <Form.Control
+                    name="insWidth"
                     aria-label="Width"
                     placeholder="Width"
-                    value={insWidth}
-                    onChange={e => setInsWidth(e.target.value)}
+                    value={formValues.insWidth.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.insWidth.isInValid &&
+                      formValues.insWidth.touched
+                    }
                   />
                 </InputGroup>
               </Form.Group>
@@ -305,22 +488,30 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Number of Panels:</Form.Label>
                 <Form.Control
+                  name="insNumPanels"
                   placeholder="# of Panels"
-                  value={insNumPanels}
-                  onChange={e => {
-                    setInsNumPanels(e.target.value);
-                  }}
+                  value={formValues.insNumPanels.value}
+                  onChange={e => updateValues(e)}
+                  onBlur={e => validateInput(e)}
+                  isInvalid={
+                    formValues.insNumPanels.isInValid &&
+                    formValues.insNumPanels.touched
+                  }
                 />
               </Form.Group>
 
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Number of Pages:</Form.Label>
                 <Form.Control
+                  name="insNumPages"
                   placeholder="# of Pages"
-                  value={insNumPages}
-                  onChange={e => {
-                    setInsNumPages(e.target.value);
-                  }}
+                  value={formValues.insNumPages.value}
+                  onChange={e => updateValues(e)}
+                  onBlur={e => validateInput(e)}
+                  isInvalid={
+                    formValues.insNumPages.isInValid &&
+                    formValues.insNumPages.touched
+                  }
                 />
               </Form.Group>
             </div>
@@ -329,9 +520,10 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Cover Paper Name:</Form.Label>
                 <Form.Select
+                  name="bkCvrPaperName"
                   placeholder="Paper Name"
-                  value={bkCvrPaperName}
-                  onChange={e => setBkCvrPaperName(e.target.value)}
+                  value={formValues.bkCvrPaperName.value}
+                  onChange={e => updateValues(e)}
                 >
                   {globalState.papers.map((paper, i) => {
                     return (
@@ -346,9 +538,10 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Text Paper Name:</Form.Label>
                 <Form.Select
+                  name="bkTxtPaperName"
                   placeholder="Paper Name"
-                  value={bkTxtPaperName}
-                  onChange={e => setBkTxtPaperName(e.target.value)}
+                  value={formValues.bkTxtPaperName.value}
+                  onChange={e => updateValues(e)}
                 >
                   {globalState.papers.map((paper, i) => {
                     return (
@@ -364,17 +557,28 @@ const AddComponentModal = props => {
                 <Form.Label>Flat Size:</Form.Label>
                 <InputGroup className="mb-3">
                   <Form.Control
+                    name="bkHeight"
                     aria-label="Height"
                     placeholder="Height"
-                    value={bkHeight}
-                    onChange={event => setBkHeight(event.target.value)}
+                    value={formValues.bkHeight.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.bkHeight.isInValid &&
+                      formValues.bkHeight.touched
+                    }
                   />
                   <InputGroup.Text>X</InputGroup.Text>
                   <Form.Control
+                    name="bkWidth"
                     aria-label="Width"
                     placeholder="Width"
-                    value={bkWidth}
-                    onChange={e => setBkWidth(e.target.value)}
+                    value={formValues.bkWidth.value}
+                    onChange={e => updateValues(e)}
+                    onBlur={e => validateInput(e)}
+                    isInvalid={
+                      formValues.bkWidth.isInValid && formValues.bkWidth.touched
+                    }
                   />
                 </InputGroup>
               </Form.Group>
@@ -382,11 +586,15 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Number of Pages:</Form.Label>
                 <Form.Control
+                  name="bkNumPages"
                   placeholder="# of Pages"
-                  value={bkNumPages}
-                  onChange={e => {
-                    setBkNumPages(e.target.value);
-                  }}
+                  value={formValues.bkNumPages.value}
+                  onChange={e => updateValues(e)}
+                  onBlur={e => validateInput(e)}
+                  isInvalid={
+                    formValues.bkNumPages.isInValid &&
+                    formValues.bkNumPages.touched
+                  }
                 />
               </Form.Group>
             </div>
@@ -394,9 +602,10 @@ const AddComponentModal = props => {
               <Form.Group as={Col} controlId="formAddComponent">
                 <Form.Label>Envelope Name:</Form.Label>
                 <Form.Select
+                  name="envName"
                   placeholder="Envelope Name"
-                  value={envName}
-                  onChange={e => setEnvName(e.target.value)}
+                  value={formValues.envName.value}
+                  onChange={e => updateValues(e)}
                 >
                   {globalState.envelopes.map((envelope, i) => {
                     return (
