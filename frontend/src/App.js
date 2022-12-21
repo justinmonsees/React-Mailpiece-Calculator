@@ -19,11 +19,13 @@ function App() {
         <Sidebar />
         <div className="main-content">
           <Header />
-          <Routes>
-            <Route path="/" element={<Calculator />} />
-            <Route path="/manage-papers" element={<ManagePaper />} />
-            <Route path="/saved" element={<Saved />} />
-          </Routes>
+          <div className="p-3">
+            <Routes>
+              <Route path="/" element={<Calculator />} />
+              <Route path="/manage-papers" element={<ManagePaper />} />
+              <Route path="/saved" element={<Saved />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </GlobalStore>

@@ -63,7 +63,7 @@ const Calculator = () => {
         <tbody>
           {components.length === 0 && (
             <tr>
-              <td colSpan="4">No components added yet.</td>
+              <td colSpan="6">No components added yet.</td>
             </tr>
           )}
 

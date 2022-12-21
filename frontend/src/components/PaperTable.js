@@ -51,8 +51,8 @@ const PaperTable = props => {
         )._id,
         weight: paperWeight,
         weightUnit: paperWeightUnit,
-        caliper: paperThickness
-      })
+        caliper: paperThickness,
+      }),
     };
     try {
       await fetch(PAPER_URL + paperIdToEdit, requestOptions);
@@ -92,7 +92,7 @@ const PaperTable = props => {
         <tbody>
           {globalState.papers.length === 0 && (
             <tr>
-              <td colSpan="4">No papers exist</td>
+              <td colSpan="6">No papers exist</td>
             </tr>
           )}
 

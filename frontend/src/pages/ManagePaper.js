@@ -7,6 +7,7 @@ import React from "react";
 const ManagePaper = () => {
   return (
     <>
+      <h1>Manage Papers</h1>
       <AddPaperModal />
 
       <PaperTable />
