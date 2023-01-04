@@ -14,4 +14,9 @@ code {
 
 .main-content {
   flex-grow: 1;
+  overflow-y: scroll;
+}
+
+.main-wrapper {
+  height: 100vh;
 }

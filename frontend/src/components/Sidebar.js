@@ -5,7 +5,7 @@ import * as fa from 'react-icons/fa';
 
 const sideBarLinkData = [
   {
-    path: '/',
+    path: '/calculator',
     label: 'Calculator',
     icon: <fa.FaCalculator />,
   },
