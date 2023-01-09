@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { Context } from '../components/context/GlobalContext';
+import { ENDPOINT_URL } from '../config/config';
 
 const AddPaperModal = props => {
   //get global state from the globalContext
@@ -25,16 +26,16 @@ const AddPaperModal = props => {
   const [paperThickness, setPaperThickness] = useState('');
 
   const saveNewPaper = async paper => {
-    const newPaperURL = 'http://localhost:3000/papers';
+    const newPaperURL = `${ENDPOINT_URL}/papers`;
 
     console.log(JSON.stringify(paper));
     try {
       const res = await fetch(newPaperURL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(paper)
+        body: JSON.stringify(paper),
       });
 
       updateGlobalState();
@@ -57,7 +58,7 @@ const AddPaperModal = props => {
       type: paperTypeID,
       caliper: paperThickness,
       weight: paperWeight,
-      weightUnit: paperWeightUnit
+      weightUnit: paperWeightUnit,
     };
 
     //set a post request to add the paper to the database

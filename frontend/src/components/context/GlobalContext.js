@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
-
+import { ENDPOINT_URL } from '../../config/config';
 export const Context = React.createContext({});
 
 const GlobalStore = ({ children }) => {
   const [globalState, setGlobalState] = useState({
     papers: [],
     paperTypes: [],
-    envelopes: []
+    envelopes: [],
   });
 
   const updateGlobalState = async () => {
     try {
-      const paperResponse = await fetch('http://localhost:3000/papers');
+      const paperResponse = await fetch(`${ENDPOINT_URL}/papers`);
       const curPapers = await paperResponse.json();
-      const paperTypeResponse = await fetch('http://localhost:3000/paperTypes');
+      const paperTypeResponse = await fetch(`${ENDPOINT_URL}/paperTypes`);
       const curPaperTypes = await paperTypeResponse.json();
-      const envelopeResponse = await fetch('http://localhost:3000/envelopes');
+      const envelopeResponse = await fetch(`${ENDPOINT_URL}/envelopes`);
       const curEnvelopes = await envelopeResponse.json();
 
       setGlobalState({
         papers: curPapers,
         paperTypes: curPaperTypes,
-        envelopes: curEnvelopes
+        envelopes: curEnvelopes,
       });
     } catch (e) {
       console.log(e);

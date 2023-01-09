@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { ENDPOINT_URL } from '../config/config';
 
 const PaperTypeForm = () => {
   const [paperTypeName, setPaperTypeName] = useState('');
@@ -11,16 +12,16 @@ const PaperTypeForm = () => {
     const newPaperType = JSON.stringify({
       name: paperTypeName,
       basis_width: 26,
-      basis_height: 20
+      basis_height: 20,
     });
 
     try {
-      await fetch('http://localhost:3000/paperTypes', {
+      await fetch(`${ENDPOINT_URL}/paperTypes`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: newPaperType
+        body: newPaperType,
       });
     } catch (e) {
       alert(e);

@@ -3,8 +3,9 @@ import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import Table from 'react-bootstrap/Table';
 import * as fa from 'react-icons/fa';
 import { Context } from '../components/context/GlobalContext';
+import { ENDPOINT_URL } from '../config/config';
 
-const PAPER_URL = 'http://localhost:3000/papers/';
+const PAPER_URL = `${ENDPOINT_URL}/papers/`;
 
 const PaperTable = props => {
   //get global state from the globalContext
