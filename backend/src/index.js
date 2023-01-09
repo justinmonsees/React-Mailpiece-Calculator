@@ -6,8 +6,6 @@ const paperRouter = require("./routers/paperRouter");
 const paperTypeRouter = require("./routers/paperTypeRouter");
 const envelopeRouter = require("./routers/envelopeRouter");
 
-const errLog = require("./logger/logger");
-
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -19,5 +17,4 @@ app.use(envelopeRouter);
 
 app.listen(port, () => {
   console.log("Server is up on port " + port);
-  errLog.error("error creating objects");
 });
